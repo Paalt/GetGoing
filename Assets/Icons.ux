@@ -1,0 +1,7 @@
+<Panel ux:Class="Icons">
+	<Text ux:Class="FA.IconBase" Color="White" FontSize="30">
+		<Font File="fontawesome-webfont.ttf" />
+	</Text>
+	<FA.IconBase ux:Class="FA.Home">&#xf015;</FA.IconBase>
+	<FA.IconBase ux:Class="FA.Work">&#xf1ad;</FA.IconBase>
+</Panel>

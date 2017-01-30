@@ -1,0 +1,9 @@
+<Panel ux:Class="FadingPanel">
+	<AddingAnimation>
+		<Change this.Opacity="0" Duration="0.15" />
+	</AddingAnimation>
+	<RemovingAnimation>
+		<Change this.Opacity="0" Duration="0.15" />
+	</RemovingAnimation>
+</Panel>
+	   
