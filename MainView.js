@@ -1,102 +1,103 @@
-var localCache = require("localCache");
+var moment = require("moment");
 var Observable = require("FuseJS/Observable");
-
-var baseUrl = "https://reisapi.ruter.no";
-
-function ruter(resource, method){
-	return fetch(baseUrl + "/" + resource,
-		  {
-			  method: method,
-			  headers : {
-				  'Content-Type': 'application/json'
-			  }
-		  })
-		.then(function(result){
-			console.log("Status: " + result.status);
-			return result.json();
-		}).then(function(json){
-			//console.log("JSON: " + json);
-			return json;
-		});
-}
-
-function get(resource) {
-	return ruter(resource, 'get');
-}
-
-function getHeartbeat(){
-	console.log("Getting heartbeat");
-	return get("Heartbeat/Index");
-}
+var context = require("Modules/context");
 
 var locationText = Observable("skiba");
-var places = Observable();
 
-function getPlaces(searchString, location){
-	var loc = "";
-	if (location) {
-		loc = "?location=" + location;
+var updatePlaces = Observable(1);
+var updateProposals = Observable(1);
+var places = updatePlaces.map(function(x){ return context.getPlaces(locationText.value); }).inner();
+var proposals = updateProposals.map(function(x){ return context.getTravelProposals(); }).inner();
+
+var nextPlan = Observable();
+
+var travelTypes = [
+	"Walking",
+	"AirportBus",
+	"Bus",
+	"Dummy",
+	"AirportTrain",
+	"Boat",
+	"Train",
+	"Tram",
+	"Metro"
+];
+
+function search(){
+	updatePlaces.value += 1;
+}
+
+function getTravelProposals(){
+	updateProposals.value += 1;
+}
+
+var markers = Observable();
+
+function selectStop(arg){
+	markers.clear();
+
+	var data = arg.data;
+	if (data.DepartureStop) {
+		console.log("ID: " + data.DepartureStop.ID);
+		context.getStop(data.DepartureStop.ID)
+			.then(function(stops){
+				stops.forEach(function(stop){
+					markers.add({ lat: stop.Latitude, long: stop.Longitude });
+				});
+			});
 	}
-	let resource = "Place/GetPlaces/" + searchString + loc;
-	//console.log("Resource: " + resource);
-	return get(resource);
+	if (data.ArrivalStop) {
+		console.log("ID: " + data.DepartureStop.ID);
+		context.getStop(data.ArrivalStop.ID)
+			.then(function(stops){
+				stops.forEach(function(stop){
+					markers.add({ lat: stop.Latitude, long: stop.Longitude });
+				});
+			});
+	}
+	console.log("Markers: " + markers.toString());
 }
-
-function searchForPlace(){
-	getPlaces(locationText.value)
-		.then(function(pl){
-			/*pl.forEach(function(p){
-				console.log("Name: " + p.Name);
-			});*/
-			places.replaceAll(pl);
-		});
-}
-
-searchForPlace();
-
-var home = Observable();
-var work = Observable();
-
-function setHome(arg){
-	home.value = arg.data;
-	var name = arg.data.Name;
-	console.log("Saving home: " + name);
-	localCache.saveConfig({ home: home.value, work: work.value });
-}
-
-function setWork(arg){
-	work.value = arg.data;
-	var name = arg.data.Name;
-	console.log("Saving work: " + name);
-	localCache.saveConfig({ home: home.value, work: work.value });
-}
-
-function loadConfig(){
-	var c = localCache.loadConfig();
-	console.log("C::: " + JSON.stringify(c));
-	if (c === null) return;
-	home.value = c.home;
-	work.value = c.work;
-	console.log("C: " + JSON.stringify(c));
-};
-
-loadConfig();
 
 module.exports = {
+	selectStop: selectStop,
+	markers: markers,
+	search: search,
+	getTravelProposals: getTravelProposals,
 	locationText: locationText,
-	searchForPlace: searchForPlace,
-	places: places.map(function(p){
-		p.status = home.combineLatest(work, (function(home,work){
-			if (home && home.Name === p.Name) { return "home"; }
-			else if (work && work.Name === p.Name) { return "work"; }
-			else {
-				return "unknown";
+	places: places,
+	proposals: proposals.map(function(x){
+		
+		x.travelTime = "" + x.TotalTravelTime;
+		x.Stages.forEach(function(s){
+			if (s.DepartureTime) {
+				s.departsIn = moment(s.DepartureTime).fromNow();
 			}
-		}));
-		return p;
+			if (s.ArrivalTime) {
+				s.arrivesIn = moment(s.ArrivalTime).fromNow();
+			}
+			if (s.DepartureStop) {
+				s.hasDepartName = true;
+				s.departName = s.DepartureStop.Name;
+			}
+			if (s.ArrivalStop) {
+				s.hasArriveName = true;
+				s.arriveName = s.ArrivalStop.Name;
+			}
+			if (s.LineName) {
+				s.line = s.LineName;
+			}
+			if (s.Transportation === 0) {
+				s.isWalking = true;
+				s.walkingTime = moment(s.ArrivalTime).diff(s.DepartureTime, 'minutes');
+			}
+			
+			s.travelType = travelTypes[s.Transportation];
+		});
+		return x;
 	}),
-	work: work,
-	home: home,
-	setHome: setHome,
-	setWork: setWork
+	nextPlan: nextPlan,
+	home: context.home,
+	work: context.work,
+	setWork: context.setWork,
+	setHome: context.setHome
 };

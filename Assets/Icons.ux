@@ -1,7 +1,17 @@
 <Panel ux:Class="Icons">
-	<Text ux:Class="FA.IconBase" Color="White" FontSize="30">
+	<Text ux:Class="FA.IconBase" Color="White" FontSize="30" TextAlignment="Center">
 		<Font File="fontawesome-webfont.ttf" />
 	</Text>
 	<FA.IconBase ux:Class="FA.Home">&#xf015;</FA.IconBase>
 	<FA.IconBase ux:Class="FA.Work">&#xf1ad;</FA.IconBase>
+
+	<FA.IconBase ux:Class="FA.Bus">&#xf207;</FA.IconBase>
+	<FA.IconBase ux:Class="FA.AirportBus">&#xf207;</FA.IconBase>
+	<FA.IconBase ux:Class="FA.Boat">&#xf21a;</FA.IconBase>
+	<FA.IconBase ux:Class="FA.Walking">&#xf183;</FA.IconBase>
+	<FA.IconBase ux:Class="FA.Train">&#xf238;</FA.IconBase>
+	<FA.IconBase ux:Class="FA.AirportTrain">&#xf238;</FA.IconBase>
+	<FA.IconBase ux:Class="FA.Tram">&#xf238;</FA.IconBase>
+	<FA.IconBase ux:Class="FA.Metro">&#xf239;</FA.IconBase>
+	
 </Panel>

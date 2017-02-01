@@ -1,0 +1,86 @@
+<Page ux:Class="NextBusPage">
+	<Activated>
+		<Callback Handler="{getTravelProposals}" />
+	</Activated>
+	<WhileTrue ux:Name="showMap">
+		<Panel>
+			<NativeViewHost>
+				<Panel Alignment="TopLeft">
+					<Text Value="Dismiss" Margin="15"/>
+					<Rectangle CornerRadius="5" Color="#9fa8da" />
+					<Clicked>
+						<Set showMap.Value="false"/>
+					</Clicked>
+				</Panel>
+				<MapView>
+					<Each Items="{markers}">
+						<MapMarker Latitude="{lat}" Longitude="{long}" Label="{name}"/>
+					</Each> 
+				</MapView>
+			</NativeViewHost>
+
+			<AddingAnimation>
+				<Move Y="1" RelativeTo="Size" Duration="0.15" Easing="CubicInOut"/>
+			</AddingAnimation>
+			<RemovingAnimation>
+				<Move Y="1" RelativeTo="Size" Duration="0.15" Easing="CubicInOut"/>
+			</RemovingAnimation>
+		</Panel>
+	</WhileTrue>
+	<ScrollView>
+		<StackPanel> 
+			<Each Items="{proposals}">
+				<Deferred>
+					<FadingPanel Margin="5" Color="#b3e5fc">
+						<StackLayout />
+						<Panel Height="40" Color="#9fa8da" Margin="3">
+							<Text Value="Travel time: {travelTime}" Alignment="VerticalCenter" Margin="10"/>
+						</Panel>
+						<Each Items="{Stages}">
+							<Deferred>
+								<FadingPanel Margin="10" Color="#80deea44">
+									<Clicked>
+										<Set showMap.Value="true" />
+										<Callback Handler="{selectStop}"/>
+									</Clicked>
+									<DockLayout />
+									<WhileTrue Value="{hasDepartName}">
+										<Text Value="From {departName}" Dock="Top"/>
+									</WhileTrue>
+									<WhileTrue Value="{hasArriveName}">
+										<Text Value="To {arriveName}" Dock="Top"/>
+									</WhileTrue>
+									<WhileTrue Value="{isWalking}">
+										<Text Value="walk for {walkingTime} minutes" Alignment="VerticalCenter" />
+									</WhileTrue>
+									<WhileFalse Value="{isWalking}">
+										<Grid Rows="auto,auto" Color="#fff2" Margin="2" CellSpacing="4" Alignment="VerticalCenter">
+											<Text Value="Departs {departsIn}" />
+											<Text Value="Arrives {arrivesIn}" />
+										</Grid>
+									</WhileFalse>
+									<Grid Columns="auto,auto" Margin="5" Dock="Left" Padding="10" >
+										<Rectangle CornerRadius="5" Layer="Background" Color="#7b1fa222" />
+										<Text Value="{line}" Alignment="CenterLeft" Margin="5,0,8,0"/>
+										<Panel>
+											<Match Value="{travelType}">
+												<Case String="Bus"><FA.Bus Color="Black"/></Case>
+												<Case String="AirportBus"><FA.AirportBus Color="Black"/></Case>
+												<Case String="Boat"><FA.Boat Color="Black"/></Case>
+												<Case String="Walking"><FA.Walking Color="Black"/></Case>
+												<Case String="Train"><FA.Train Color="Black"/></Case>
+												<Case String="AirportTrain"><FA.AirportTrain Color="Black"/></Case>
+												<Case String="Tram"><FA.Tram Color="Black"/></Case>
+												<Case String="Metro"><FA.Metro Color="Black"/></Case> 
+											</Match>
+										</Panel>
+									</Grid>
+								</FadingPanel>
+							</Deferred>
+						</Each>
+					</FadingPanel>
+				</Deferred>
+			</Each>
+		</StackPanel>
+	</ScrollView>
+</Page>

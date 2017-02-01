@@ -1,0 +1,5 @@
+<Panel ux:Class="GMT.Button">
+	<string ux:Property="Text" />
+	<Text Value="{ReadProperty Text}" Color="White" Alignment="Center" FontSize="18" Margin="20,10"/>
+	<Rectangle CornerRadius="4" Color="#4527a0"/>
+</Panel>

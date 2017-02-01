@@ -1,51 +1,25 @@
 <App>
 	<JavaScript File="MainView.js"/>
-	<DockPanel>
-		<Panel Dock="Top" Height="60" Color="#f3e5f5">
-			<TextInput Value="{locationText}" PlaceholderText="location" ActionTriggered="{searchForPlace}" Margin="20"/>
-		</Panel>
-
-		<Panel ux:Class="GMT.Button">
-			<string ux:Property="Text" />
-			<Text Value="{ReadProperty Text}" Color="White" Alignment="Center" FontSize="18" Margin="20,10"/>
-			<Rectangle CornerRadius="4" Color="#4527a0"/>
-		</Panel>
-		
-		<ScrollView>
-			<StackPanel>
-				<Each Items="{places}">
-					<Panel Height="80" Color="#039be5" Margin="1">
-						<Clicked>
-							<Toggle Target="showOptions" />
-						</Clicked>
-						<WhileTrue ux:Name="showOptions">
-							<FadingPanel Color="#039be5">
-								<GridLayout ColumnCount="2"/>
-								<GMT.Button Text="Sett hjem" Margin="10" Clicked="{setHome}"/> 
-								<GMT.Button Text="Sett jobb" Margin="10" Clicked="{setWork}"/>
-							</FadingPanel>
-						</WhileTrue>
-						<DockPanel>
-							<Text Value="{Name}" Alignment="VerticalCenter" Color="White" FontSize="20" Margin="5"/>
-							<Panel Alignment="CenterRight" Margin="20">
-								<Match Value="{status}">
-									<Case String="home">
-										<FA.Home />
-									</Case>
-									<Case String="work">
-										<FA.Work />
-									</Case>
-									<Case String="unknown">
-										
-									</Case>
-								</Match>
-
-							</Panel>
-						</DockPanel>
-
-					</Panel>
-				</Each>
-			</StackPanel>
-		</ScrollView>
-	</DockPanel>
+	<ClientPanel>
+		<Grid Rows="1*,60">
+			<PageControl ux:Name="nav" Active="nextBusPage">
+				<SearchPage ux:Name="searchPage" />
+				<NextBusPage ux:Name="nextBusPage" />
+			</PageControl>
+			<Grid ColumnCount="2" Height="60" Dock="Bottom">
+				<Panel Color="#fff9c4">
+					<Clicked>
+						<NavigateTo Target="searchPage" NavigationContext="nav"/>
+					</Clicked>
+					<Text Value="Search" Alignment="Center"/>
+				</Panel>
+				<Panel Color="#80d8ff">
+					<Clicked>
+						<NavigateTo Target="nextBusPage" NavigationContext="nav"/>
+					</Clicked>
+					<Text Value="When is my next bus?" Alignment="Center"/>
+				</Panel>
+			</Grid>
+		</Grid>
+	</ClientPanel>
 </App>
