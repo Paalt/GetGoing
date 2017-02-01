@@ -6,20 +6,13 @@ var stopsSQL = function(id){
 };
 
 function ruter(resource, method){
-	return fetch(baseUrl + "/" + resource,
-		  {
-			  method: method,
-			  headers : {
-				  'Content-Type': 'txt/json'
-			  }
-		  })
-		.then(function(result){
-			console.log("Status: " + result.status);
-			return result.json();
-		}).then(function(json){
-			//console.log("JSON: " + json);
-			return json;
-		});
+	return fetch(baseUrl + "/" + resource,{
+		method: method,
+		headers : {
+			'Content-Type': 'txt/json'
+		}})
+		.then(function(result){ return result.json(); })
+		.then(function(json){ return json; });
 }
 
 function get(resource) {

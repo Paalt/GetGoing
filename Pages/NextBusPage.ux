@@ -1,4 +1,5 @@
 <Page ux:Class="NextBusPage">
+	<JavaScript File="NextBusPage.js" />
 	<Activated>
 		<Callback Handler="{getTravelProposals}" />
 	</Activated>

@@ -18,6 +18,7 @@ function setWork(arg){
 
 function loadConfig(){
 	var c = localCache.loadConfig();
+	console.log("CC:: " + c);
 	if (c === null) return;
 	home.value = c.home;
 	work.value = c.work;

@@ -1,14 +1,9 @@
-var moment = require("moment");
 var Observable = require("FuseJS/Observable");
 var context = require("Modules/context");
+var moment = require("moment");
 
-var locationText = Observable("skiba");
-
-var updatePlaces = Observable(1);
 var updateProposals = Observable(1);
-var places = updatePlaces.map(function(x){ return context.getPlaces(locationText.value); }).inner();
 var proposals = updateProposals.map(function(x){ return context.getTravelProposals(); }).inner();
-
 var nextPlan = Observable();
 
 var travelTypes = [
@@ -22,10 +17,6 @@ var travelTypes = [
 	"Tram",
 	"Metro"
 ];
-
-function search(){
-	updatePlaces.value += 1;
-}
 
 function getTravelProposals(){
 	updateProposals.value += 1;
@@ -61,10 +52,7 @@ function selectStop(arg){
 module.exports = {
 	selectStop: selectStop,
 	markers: markers,
-	search: search,
 	getTravelProposals: getTravelProposals,
-	locationText: locationText,
-	places: places,
 	proposals: proposals.map(function(x){
 		
 		x.travelTime = "" + x.TotalTravelTime;
@@ -95,9 +83,5 @@ module.exports = {
 		});
 		return x;
 	}),
-	nextPlan: nextPlan,
-	home: context.home,
-	work: context.work,
-	setWork: context.setWork,
-	setHome: context.setHome
+	nextPlan: nextPlan
 };

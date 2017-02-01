@@ -1,5 +1,4 @@
 <App>
-	<JavaScript File="MainView.js"/>
 	<ClientPanel>
 		<Grid Rows="1*,60">
 			<PageControl ux:Name="nav" Active="nextBusPage">

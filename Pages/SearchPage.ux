@@ -1,4 +1,5 @@
 <Page ux:Class="SearchPage">
+	<JavaScript File="SearchPage.js" />
 	<Grid Rows="60,1*">
 		<Panel Color="#f3e5f5">
 			<TextInput Value="{locationText}" PlaceholderText="location" ActionTriggered="{search}" Margin="20"/>
